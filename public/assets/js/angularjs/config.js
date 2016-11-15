@@ -1,10 +1,20 @@
 musicbass.config(["$stateProvider", "$urlRouterProvider", function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/");
-    $stateProvider.state('app', {
-        abstract: true
-
+    $stateProvider.state('public', {
+        abstract: true,
+        resolve: {
+            isLogged: ["loginService", "$q", function(loginService, $q) {
+                var deferred = $q.defer();
+                loginService.isLogged().then(function() { //Verifica se está logado
+                    return deferred.reject("ALREADY_LOGGED");
+                }).catch(function() {
+                    return deferred.resolve();
+                });
+                return deferred.promise;
+            }]
+                }
     }).state('home', {
-        parent: "app",
+        parent: "public",
         url: '/',
         views: {
             'layout@': {
@@ -43,10 +53,44 @@ musicbass.config(["$stateProvider", "$urlRouterProvider", function($stateProvide
         url: 'login',
         views: {
             'content@home': {
-                templateUrl: 'html-views/view-login.html'
+                templateUrl: 'html-views/view-login.html',
+                controller: 'loginController'
             },
         }
     });
+
+    $stateProvider.state('private', {
+        abstract: true,
+        resolve: {
+            isLogged: ["loginService", "$q", function(loginService, $q) {
+                var deferred = $q.defer();
+
+                loginService.isLogged().then(function() { //Verifica se está logado
+                    return deferred.resolve();
+                }).catch(function() {
+                    return deferred.reject("AUTH_REQUIRED");
+                });
+
+                return deferred.promise;
+            }]
+        }
+    }).state('private.home', {
+        parent: "private",
+        url: '/private',
+        views: {
+            'layout@': {
+                templateUrl: 'html-views/view-layout.html'
+            },
+            'header@private.home': {
+                templateUrl: 'html-views/view-header-private.html',
+                controller: 'headerPrivateController'
+            },
+            'content@private.home': {
+                templateUrl: 'html-views/view-content-private.html'
+            },
+        }
+    });
+
 }]);
 
 musicbass.run(["$rootScope", "$state", function($rootScope, $state) {
@@ -57,7 +101,7 @@ musicbass.run(["$rootScope", "$state", function($rootScope, $state) {
                 $state.go("home.login");
                 break;
             case "ALREADY_LOGGED":
-                $state.go("home");
+                $state.go("private.home");
                 break;
 
             default:
@@ -65,19 +109,4 @@ musicbass.run(["$rootScope", "$state", function($rootScope, $state) {
         }
 
     });
-
-    $rootScope
-        .$on('$stateChangeStart',
-            function(event, toState, toParams, fromState, fromParams) {
-                //$("#ui-view").html("");
-                //$(".page-loading").removeClass("hidden");
-            });
-
-    $rootScope
-        .$on('$stateChangeSuccess',
-            function(event, toState, toParams, fromState, fromParams) {
-                //debugger;
-                //angular.element(element.getElementsByClassName("loading_router")).addClass("hide");
-
-            });
 }]);

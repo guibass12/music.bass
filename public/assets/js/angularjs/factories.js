@@ -1,12 +1,15 @@
-musicbass.factory("loginService", ["$http", "$q", "$location", "sessionService",
-    function($http, $q, $location, sessionService) {
+musicbass.factory("loginService", ["$http", "$q", "$location", "sessionService", "$httpParamSerializerJQLike",
+    function($http, $q, $location, sessionService, $httpParamSerializerJQLike) {
         return {
             login: function(data) {
+
                 return $http.post(_config.serverURL + _config.serverPORT + _config.tokenEndPoint,
-                    $.param(data), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
+                    $httpParamSerializerJQLike(data), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
             },
             isLogged: function() {
                 if (!sessionService.get("tokenData")) return $q.reject("error");
+                var url = _config.serverURL + _config.serverPORT + _config.API_URL + '/usuarios/islogged';
+
                 return $http.get(_config.serverURL + _config.serverPORT + _config.API_URL + '/usuarios/islogged', { headers: { 'Authorization': 'Bearer ' + JSON.parse(base64_decode(sessionService.get("tokenData"))).access_token } });
             },
             logout: function(scope) {
@@ -18,7 +21,7 @@ musicbass.factory("loginService", ["$http", "$q", "$location", "sessionService",
     }
 ]);
 
-musicbass.factory("DataContext", ["$http", "$q", "$rootScope", "sessionService", function($http, sessionService) {
+musicbass.factory("DataContext", ["$http", "sessionService", function($http, sessionService) {
     return {
         Usuarios: {
             getUserByEmail: function(email) {
@@ -29,8 +32,23 @@ musicbass.factory("DataContext", ["$http", "$q", "$rootScope", "sessionService",
                     JSON.stringify(usuario)
                 );
             }
-        }
-    }
+        },
+        tokenData: {
+            data: {},
+            setToken: function(data) {
+                this.data["Expired"] = data.Expired;
+                this.data["Issued"] = data.Issued;
+                this.data["access_token"] = data.access_token;
+                this.data["expires_in"] = data.expires_in;
+                this.data["token_type"] = data.token_type;
+                this.data["Nome"] = data.nome;
+                sessionService.set("tokenData", base64_encode(JSON.stringify(this.data)));
+            },
+            getToken: function() {
+                return this.data;
+            }
+        },
+    };
 }]);
 
 musicbass.factory('sessionService', function() {
@@ -73,22 +91,7 @@ musicbass.factory("helperService", [
                     return "";
                 }
             },
-            tokenData: {
-                data: {},
-                setToken: function(data) {
-                    this.data["Expired"] = data.Expired;
-                    this.data["Issued"] = data.Issued;
-                    this.data["access_token"] = data.access_token;
-                    this.data["expires_in"] = data.expires_in;
-                    this.data["token_type"] = data.token_type;
 
-                    sessionService.set("tokenData", base64_encode(JSON.stringify(this.data)));
-                },
-                getToken: function() {
-                    return this.data;
-                }
-
-            },
             base64toBlob: function(base64Data) {
                 var arr = base64Data.split(','),
                     contentType = arr[0].match(/:(.*?);/)[1];
