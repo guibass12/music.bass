@@ -1,141 +1,51 @@
-musicbass.factory("userService", ["$q", "$timeout", "$firebaseObject", "$firebaseArray",
-    function($q, $timeout, $firebaseObject, $firebaseArray) {
-
-
+musicbass.factory("loginService", ["$http", "$q", "$location", "sessionService",
+    function($http, $q, $location, sessionService) {
         return {
-            /* createUser: function(data) {
-                 var user = $firebaseObject(ref.child(data.CPF));
-                 user.CPF = data.CPF;
-                 user.Credencial = data.Credencial;
-                 user.DataNasc = data.DataNasc.toISOString();
-                 user.Email = data.Email;
-                 user.Nome = data.Nome;
-                 user.NomeMae = data.NomeMae;
-                 user.NomePai = data.NomePai;
-                 user.RG = data.RG;
-                 user.RGUF = data.RGUF;
-                 user.Funcao = data.Funcao;
-                 user.PhotoURL = data.PhotoURL;
-
-                     return user.$save();
-             },*/
-            createUser: function(data) {
-                var ref = firebase.database().ref('usuarios/' + data.CPF);
-                return ref.set(data);
+            login: function(data) {
+                return $http.post(_config.serverURL + _config.serverPORT + _config.tokenEndPoint,
+                    $.param(data), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
             },
-            getUser: function(cpf) {
-                var deferred = $q.defer();
-                var ref = firebase.database().ref('usuarios/' + cpf);
-                var obj = $firebaseObject(ref);
-                obj.$loaded().then(function(a) {
-                    return deferred.resolve(a);
-                });
-
-                return deferred.promise;
+            isLogged: function() {
+                if (!sessionService.get("tokenData")) return $q.reject("error");
+                return $http.get(_config.serverURL + _config.serverPORT + _config.API_URL + '/usuarios/islogged', { headers: { 'Authorization': 'Bearer ' + JSON.parse(base64_decode(sessionService.get("tokenData"))).access_token } });
             },
-            photoProfileUpload: function(file, uid) {
-                var storageRef = firebase.storage().ref("images/credenciais/" + uid + ".jpg");
-                return storageRef.put(file);
-            }
-        }
-
-    }
-]);
-
-musicbass.factory("localidadeService", ["$q", "$firebaseArray",
-    function($q, $firebaseArray) {
-        var regioesCache;
-        var estadosCache;
-        var distritosCache = [];
-
-        var ref = firebase.database().ref();
-        return {
-            getRegioes: function() {
-                var deferred = $q.defer();
-                var distritosRef = ref.child('distrito_igrejas');
-                var regioesRef = ref.child('regioes_brasil');
-                var list = $firebaseArray(regioesRef.orderByChild('Ativo').equalTo(true));
-                list.$loaded().then(function(a) {
-                    return deferred.resolve(a);
-                });
-                return deferred.promise;
-            },
-            getEstados: function() {
-                var deferred = $q.defer();
-                if (estadosCache) {
-                    return $q.when(estadosCache);
-                } else {
-                    var estadosRef = ref.child('estados_brasil');
-                    estadosRef.once('value').then(function(e) {
-                        estadosCache = e;
-                        return deferred.resolve(e);
-                    });
-                }
-                return deferred.promise;
-            },
-            getCidades: function(EstadoID) {
-                var cidadesRef = ref.child('cidades/' + EstadoID);
-                var list = $firebaseArray(cidadeRef);
-                var deferred = $q.defer();
-                list.$loaded().then(function(a) {
-                    return deferred.resolve(a);
-                });
-                return deferred.promise;
-            },
-
-            getDistritos: function(EstadoId) {
-
-                var deferred = $q.defer();
-
-                var distritosRef = ref.child('distrito_igrejas');
-                var list = $firebaseArray(distritosRef.orderByChild('EstadoId').equalTo(EstadoId));
-                list.$loaded().then(function(a) {
-
-                    return deferred.resolve(a);
-                });
-
-                return deferred.promise;
-            },
-
-            consultarCEP: function(cep) {
-                return $http.get('https://viacep.com.br/ws/' + cep + '/json/');
-            }
-        };
-    }
-]);
-
-musicbass.factory("funcoesService", ["$q", "$firebaseArray",
-    function($q, $firebaseArray) {
-        var ref = firebase.database().ref('funcoes');
-        var list = $firebaseArray(ref);
-        return {
-            getFuncoes: function() {
-                var deferred = $q.defer();
-                list.$loaded().then(function(a) {
-                    return deferred.resolve(a);
-                });
-                return deferred.promise;
+            logout: function(scope) {
+                sessionStorage.removeItem("tokenData");
+                scope.isLogged = false;
+                $location.path('/home');
             }
         }
     }
 ]);
 
-musicbass.factory("igrejasService", ["$q", "$firebaseArray",
-    function($q, $firebaseArray) {
-        var ref = firebase.database().ref();
-        return {
-            getIgrejas: function(DistritoId) {
-                var deferred = $q.defer();
-                var igrejasRef = ref.child('igrejas');
-                var list = $firebaseArray(igrejasRef.orderByChild('DistritoId').equalTo(DistritoId));
-                list.$loaded().then(function(a) {
-                    return deferred.resolve(a);
-                });
-                return deferred.promise;
+musicbass.factory("DataContext", ["$http", "$q", "$rootScope", "sessionService", function($http, sessionService) {
+    return {
+        Usuarios: {
+            getUserByEmail: function(email) {
+                return $http.get(_config.serverURL + _config.serverPORT + _config.API_URL + '/usuarios/email/' + email + '/');
+            },
+            createUsuario: function(usuario) {
+                return $http.post(_config.serverURL + _config.serverPORT + _config.API_URL + '/usuarios',
+                    JSON.stringify(usuario)
+                );
             }
         }
     }
-]);
+}]);
+
+musicbass.factory('sessionService', function() {
+    return {
+        set: function(key, value) {
+            return sessionStorage.setItem(key, value);
+        },
+        get: function(key) {
+            return sessionStorage.getItem(key);
+        },
+        destroy: function(key) {
+            return sessionStorage.removeItem(key);
+        }
+    };
+})
 
 musicbass.factory("helperService", [
     function() {
@@ -162,6 +72,22 @@ musicbass.factory("helperService", [
                 } else {
                     return "";
                 }
+            },
+            tokenData: {
+                data: {},
+                setToken: function(data) {
+                    this.data["Expired"] = data.Expired;
+                    this.data["Issued"] = data.Issued;
+                    this.data["access_token"] = data.access_token;
+                    this.data["expires_in"] = data.expires_in;
+                    this.data["token_type"] = data.token_type;
+
+                    sessionService.set("tokenData", base64_encode(JSON.stringify(this.data)));
+                },
+                getToken: function() {
+                    return this.data;
+                }
+
             },
             base64toBlob: function(base64Data) {
                 var arr = base64Data.split(','),

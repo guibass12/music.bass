@@ -13,7 +13,7 @@
                     <div class="row control-group">
                         <div class="form-group col-xs-12 floating-label-form-group controls">
                             <label for="nome">Nome</label>
-                            <input type="nome" class="form-control" name="nome" value="" placeholder="Insira seu nome" ng-model="createModel.Name" required/>
+                            <input type="nome" class="form-control" name="nome" value="" placeholder="Insira seu nome" ng-model="createModel.Nome" required/>
                             <div ng-messages="formCreateLogin.nome.$dirty && formCreateLogin.nome.$error">
                                 <div ng-messages-include="../html-templates/message-boxes/error-msgs.html"></div>
                             </div>
@@ -31,7 +31,7 @@
                     <div class="row control-group">
                         <div class="form-group col-xs-12 floating-label-form-group controls">
                             <label for="password">Senha:</label>
-                            <input type="password" class="form-control" name="password" value="" placeholder="Insira sua senha" ng-model="createModel.Password" ng-minlength="3" ng-maxlength="12" required/>
+                            <input type="password" class="form-control" name="password" value="" placeholder="Insira sua senha" ng-model="createModel.Senha" ng-minlength="3" ng-maxlength="12" required/>
                             <div ng-messages="formCreateLogin.password.$dirty && formCreateLogin.password.$error">
                                 <div ng-messages-include="../html-templates/message-boxes/error-msgs.html"></div>
                             </div>
@@ -40,7 +40,7 @@
                     <div class="row control-group">
                         <div class="form-group col-xs-12 floating-label-form-group controls">
                             <label for="confirmpassword">Confirmar Senha:</label>
-                            <input type="password" class="form-control" name="confirm_password" value="" placeholder="Confirme sua senha" ng-model="createModel.ConfirmPassword" compare="createModel.Password" required/>
+                            <input type="password" class="form-control" name="confirm_password" value="" placeholder="Confirme sua senha" ng-model="createModel.ConfirmarSenha" compare="createModel.Senha" required/>
                             <div ng-messages="formCreateLogin.confirm_password.$dirty && formCreateLogin.confirm_password.$error">
                                 <div ng-messages-include="../html-templates/message-boxes/error-msgs.html"></div>
                             </div>
@@ -50,7 +50,7 @@
                     <div id="success"></div>
                     <div class="row">
                         <div class="form-group col-xs-12">
-                            <button type="submit" class="btn btn-success btn-lg">Fazer Cadastro</button>
+                            <button type="submit" class="btn btn-success btn-lg" ng-click="formCreateLogin.$valid && createUsuario(createModel) "> Fazer Cadastro</button>
                         </div>
                     </div>
                 </form>
