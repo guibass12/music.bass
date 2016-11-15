@@ -1,0 +1,1 @@
+var musicbass = angular.module('musicbass', ['ui.router', 'ui.bootstrap', 'ngAnimate', 'ngMessages']);

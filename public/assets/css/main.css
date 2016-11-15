@@ -49,7 +49,7 @@ hr.star-primary {
 
 hr.star-light:after,
 hr.star-primary:after {
-    content: "\f005";
+    content: "\f001";
     font-family: FontAwesome;
     display: inline-block;
     position: relative;
@@ -86,7 +86,8 @@ header {
     color: white;
 }
 
-header .container {
+header .container,
+section .container {
     padding-top: 100px;
     padding-bottom: 50px;
 }
@@ -128,6 +129,10 @@ header .intro-text .skills {
     text-transform: uppercase;
     font-weight: 700;
     border: none;
+}
+
+.navbar-custom .container {
+    padding: 0px;
 }
 
 .navbar-custom a:focus {
@@ -240,57 +245,6 @@ section.success {
     section.first {
         padding-top: 75px;
     }
-}
-
-#portfolio .portfolio-item {
-    margin: 0 0 15px;
-    right: 0;
-}
-
-#portfolio .portfolio-item .portfolio-link {
-    display: block;
-    position: relative;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-#portfolio .portfolio-item .portfolio-link .caption {
-    background: rgba(24, 188, 156, 0.9);
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: all ease 0.5s;
-    -webkit-transition: all ease 0.5s;
-    -moz-transition: all ease 0.5s;
-}
-
-#portfolio .portfolio-item .portfolio-link .caption:hover {
-    opacity: 1;
-}
-
-#portfolio .portfolio-item .portfolio-link .caption .caption-content {
-    position: absolute;
-    width: 100%;
-    height: 20px;
-    font-size: 20px;
-    text-align: center;
-    top: 50%;
-    margin-top: -12px;
-    color: white;
-}
-
-#portfolio .portfolio-item .portfolio-link .caption .caption-content i {
-    margin-top: -12px;
-}
-
-#portfolio .portfolio-item .portfolio-link .caption .caption-content h3,
-#portfolio .portfolio-item .portfolio-link .caption .caption-content h4 {
-    margin: 0;
-}
-
-#portfolio * {
-    z-index: 2;
 }
 
 @media (min-width: 767px) {
@@ -445,8 +399,8 @@ fieldset[disabled] .btn-primary.active {
 
 .btn-success {
     color: white;
-    background-color: #18BC9C;
-    border-color: #18BC9C;
+    background-color: rgb(25, 123, 104);
+    border-color: #1b826e;
     font-weight: 700;
 }
 
@@ -526,72 +480,4 @@ fieldset[disabled] .btn-success.active {
 
 .scroll-top .btn:focus {
     outline: none;
-}
-
-.portfolio-modal .modal-content {
-    border-radius: 0;
-    background-clip: border-box;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    border: none;
-    min-height: 100%;
-    padding: 100px 0;
-    text-align: center;
-}
-
-.portfolio-modal .modal-content h2 {
-    margin: 0;
-    font-size: 3em;
-}
-
-.portfolio-modal .modal-content img {
-    margin-bottom: 30px;
-}
-
-.portfolio-modal .modal-content .item-details {
-    margin: 30px 0;
-}
-
-.portfolio-modal .close-modal {
-    position: absolute;
-    width: 75px;
-    height: 75px;
-    background-color: transparent;
-    top: 25px;
-    right: 25px;
-    cursor: pointer;
-}
-
-.portfolio-modal .close-modal:hover {
-    opacity: 0.3;
-}
-
-.portfolio-modal .close-modal .lr {
-    height: 75px;
-    width: 1px;
-    margin-left: 35px;
-    background-color: #2C3E50;
-    transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    /* IE 9 */
-    -webkit-transform: rotate(45deg);
-    /* Safari and Chrome */
-    z-index: 1051;
-}
-
-.portfolio-modal .close-modal .lr .rl {
-    height: 75px;
-    width: 1px;
-    background-color: #2C3E50;
-    transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    /* IE 9 */
-    -webkit-transform: rotate(90deg);
-    /* Safari and Chrome */
-    z-index: 1052;
-}
-
-.portfolio-modal .modal-backdrop {
-    opacity: 0;
-    display: none;
 }

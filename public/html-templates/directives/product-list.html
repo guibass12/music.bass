@@ -1,0 +1,9 @@
+<div class="productlist">
+    <div class="product" ng-repeat="item in items">
+        <span class="code">#COD{{item.$id}}</span>
+        <figure><img ng-src="{{item.thumb_src}}" /></figure>
+        <span class="desc">{{item.prod_desc}}</span>
+        <span class="price">{{item.price | moeda:"R$":2}}</span>
+        <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-shopping-cart"></i>Carrinho</button>
+    </div>
+</div>

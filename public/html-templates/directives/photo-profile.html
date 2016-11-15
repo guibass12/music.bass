@@ -1,0 +1,11 @@
+<div class="photo-profile-container">
+    <i class="fa fa-trash" ng-show="showDeleteButton && photo != '' " ng-click="deleteImage()" tooltip-placement="top-right" uib-tooltip="Remover a foto do perfil."></i>
+    <figure class="photo-profile {{type}}" ng-class="{{type}}" ng-click="selectImage()">
+        <i class="fa fa-user" ng-show="photo == '' && type == 'type1'"></i>
+        <div ng-show="photo == '' && type == 'type2'">
+            {{name}}
+        </div>
+        <img ng-src="{{photo}}" alt="" ng-show="photo != ''">
+    </figure>
+
+</div>
