@@ -3,10 +3,10 @@ musicbass.controller('cadastroController', ["$scope", "$uibModal", "DataContext"
     $scope.erro = false;
     $scope.success = false;
     $scope.createModel = {
-        Nome: "André Evangelista",
-        Email: "andreluisce@gmail.com",
-        Senha: "alce6582",
-        ConfirmaSenha: "alce6582"
+        Nome: "",
+        Email: "",
+        Senha: "",
+        ConfirmarSenha: ""
     };
 
     $scope.createUsuario = function(usuario) {
@@ -19,6 +19,7 @@ musicbass.controller('cadastroController', ["$scope", "$uibModal", "DataContext"
             backdrop: 'static',
             keyboard: false
         });
+        
         DataContext.Usuarios.createUsuario(usuario).then(function(res) {
             $scope.success = true;
 
@@ -26,10 +27,11 @@ musicbass.controller('cadastroController', ["$scope", "$uibModal", "DataContext"
                 Nome: "",
                 Email: "",
                 Senha: "",
-                ConfirmaSenha: ""
+                ConfirmarSenha: ""
             };
 
         }).catch(function(e) {
+            
             $scope.erro = true;
             $scope.errorMsg = e.data;
         }).finally(function() {
